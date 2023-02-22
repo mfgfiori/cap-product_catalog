@@ -1,6 +1,6 @@
 namespace com.training;
 
-using {cuid} from '@sap/cds/common';
+using {cuid, Country} from '@sap/cds/common';
 
 type EmailsAddresses_01 : array of {
     kind  : String;
@@ -96,10 +96,22 @@ entity StudentCourse {
         Student : Association to Student;
         Course  : Association to Course;
 }
+
 entity car {
     key ID                 : UUID;
         Name               : String;
         virtual discount_1 : Decimal;
         @Core.Computed : false
         virtual discount_2 : Decimal;
+}
+
+entity Orders {
+    key ClientEmail : String(65);
+        FirstName : String(30);
+        LastName  : String(30);
+        CreatedOn : Date;
+        Reviewed  : Boolean;
+        Approved  : Boolean;
+        Country   : Country;
+        Status    : String(1);
 }

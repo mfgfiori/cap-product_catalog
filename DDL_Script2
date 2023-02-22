@@ -1,0 +1,5175 @@
+{
+  "definitions": {
+    "CatalogService": {
+      "@source": "srv/catalog-service.cds",
+      "kind": "service"
+    },
+    "CatalogService.Products": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.reports.Products"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            {
+              "ref": [
+                "Name"
+              ],
+              "as": "ProductName"
+            },
+            {
+              "ref": [
+                "Description"
+              ]
+            },
+            {
+              "ref": [
+                "ImageUrl"
+              ]
+            },
+            {
+              "ref": [
+                "ReleaseDate"
+              ]
+            },
+            {
+              "ref": [
+                "DiscontinuedDate"
+              ]
+            },
+            {
+              "ref": [
+                "Price"
+              ]
+            },
+            {
+              "ref": [
+                "Height"
+              ]
+            },
+            {
+              "ref": [
+                "Width"
+              ]
+            },
+            {
+              "ref": [
+                "Depth"
+              ]
+            },
+            {
+              "ref": [
+                "Quantity"
+              ]
+            },
+            {
+              "ref": [
+                "UnitOfMeasure"
+              ],
+              "as": "ToUnitOfMeasure"
+            },
+            {
+              "ref": [
+                "Currency"
+              ],
+              "as": "ToCurrency"
+            },
+            {
+              "ref": [
+                "Category"
+              ],
+              "as": "ToCategory"
+            },
+            {
+              "ref": [
+                "Category",
+                "Name"
+              ],
+              "as": "Category"
+            },
+            {
+              "ref": [
+                "DimensionUnit"
+              ],
+              "as": "ToDimensionUnit"
+            },
+            {
+              "ref": [
+                "ToSalesData"
+              ]
+            },
+            {
+              "ref": [
+                "Supplier"
+              ]
+            },
+            {
+              "ref": [
+                "Reviews"
+              ]
+            },
+            {
+              "ref": [
+                "Rating"
+              ]
+            },
+            {
+              "ref": [
+                "StockAvailability"
+              ]
+            },
+            {
+              "ref": [
+                "ToStockAvailabity"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "ProductName": {
+          "@mandatory": true,
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "@mandatory": true,
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "@mandatory": true,
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "@mandatory": true,
+          "@assert.range": [
+            0,
+            20,
+            0
+          ],
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "ToUnitOfMeasure": {
+          "@mandatory": true,
+          "type": "cds.Association",
+          "target": "CatalogService.VH_UnitOfMesaures",
+          "keys": [
+            {
+              "ref": [
+                "Code"
+              ],
+              "as": "ID"
+            }
+          ]
+        },
+        "ToCurrency": {
+          "@mandatory": true,
+          "type": "cds.Association",
+          "target": "CatalogService.VH_Currencies",
+          "keys": [
+            {
+              "ref": [
+                "Code"
+              ],
+              "as": "ID"
+            }
+          ]
+        },
+        "ToCategory": {
+          "@mandatory": true,
+          "type": "cds.Association",
+          "target": "CatalogService.VH_Categories",
+          "keys": [
+            {
+              "ref": [
+                "Code"
+              ],
+              "as": "ID"
+            }
+          ]
+        },
+        "Category": {
+          "@readonly": true,
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ToDimensionUnit": {
+          "type": "cds.Association",
+          "target": "CatalogService.VH_DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "Code"
+              ],
+              "as": "ID"
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "ToProduct"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "CatalogService.Supplier",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.Reviews",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "ToProduct"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Rating": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "StockAvailability": {
+          "@Core.Computed": true,
+          "type": "cds.Integer"
+        },
+        "ToStockAvailabity": {
+          "type": "cds.Association",
+          "target": "CatalogService.StockAvailability",
+          "on": [
+            {
+              "ref": [
+                "ToStockAvailabity",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self",
+                "StockAvailability"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.Supplier": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.sales.Suppliers"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            {
+              "ref": [
+                "Name"
+              ]
+            },
+            {
+              "ref": [
+                "Email"
+              ]
+            },
+            {
+              "ref": [
+                "Phone"
+              ]
+            },
+            {
+              "ref": [
+                "Fax"
+              ]
+            },
+            {
+              "ref": [
+                "Product"
+              ],
+              "as": "ToProduct"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Name": {
+          "localized": true,
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Name"
+            ]
+          },
+          "notNull": true
+        },
+        "Email": {
+          "type": "cds.String"
+        },
+        "Phone": {
+          "type": "cds.String"
+        },
+        "Fax": {
+          "type": "cds.String"
+        },
+        "ToProduct": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.Products",
+          "on": [
+            {
+              "ref": [
+                "ToProduct",
+                "Supplier"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.Reviews": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.ProductReview"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            {
+              "ref": [
+                "Name"
+              ]
+            },
+            {
+              "ref": [
+                "Rating"
+              ]
+            },
+            {
+              "ref": [
+                "Comment"
+              ]
+            },
+            {
+              "ref": [
+                "createdAt"
+              ]
+            },
+            {
+              "ref": [
+                "Product"
+              ],
+              "as": "ToProduct"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Name": {
+          "type": "cds.String"
+        },
+        "Rating": {
+          "type": "cds.Integer"
+        },
+        "Comment": {
+          "type": "cds.String"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "ToProduct": {
+          "type": "cds.Association",
+          "target": "CatalogService.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.SalesData": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.sales.SalesData"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            {
+              "ref": [
+                "DeliveryDate"
+              ]
+            },
+            {
+              "ref": [
+                "Revenue"
+              ]
+            },
+            {
+              "ref": [
+                "Currency",
+                "ID"
+              ],
+              "as": "CurrencyKey"
+            },
+            {
+              "ref": [
+                "DeliveryMonth",
+                "ID"
+              ],
+              "as": "DeliveryMonthId"
+            },
+            {
+              "ref": [
+                "DeliveryMonth",
+                "Description"
+              ],
+              "as": "DeliveryMonth"
+            },
+            {
+              "ref": [
+                "Product"
+              ],
+              "as": "ToProduct"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "DeliveryDate": {
+          "type": "cds.DateTime"
+        },
+        "Revenue": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "CurrencyKey": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "DeliveryMonthId": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "DeliveryMonth": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ToProduct": {
+          "type": "cds.Association",
+          "target": "CatalogService.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.StockAvailability": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.StockAvailability"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            {
+              "ref": [
+                "Description"
+              ]
+            },
+            {
+              "ref": [
+                "Product"
+              ],
+              "as": "ToProduct"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ToProduct": {
+          "type": "cds.Association",
+          "target": "CatalogService.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "CatalogService.VH_Categories": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Categories"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ],
+              "as": "Code"
+            },
+            {
+              "ref": [
+                "Name"
+              ],
+              "as": "Text"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Code": {
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "Text": {
+          "localized": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "CatalogService.VH_Currencies": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Currencies"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ],
+              "as": "Code"
+            },
+            {
+              "ref": [
+                "Description"
+              ],
+              "as": "Text"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Code": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "Text": {
+          "localized": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "CatalogService.VH_UnitOfMesaures": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.UnitOfMeasures"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ],
+              "as": "Code"
+            },
+            {
+              "ref": [
+                "Description"
+              ],
+              "as": "Text"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Code": {
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Text": {
+          "localized": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "CatalogService.VH_DimensionUnits": {
+      "kind": "entity",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.DimensionUnits"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "ID"
+              ],
+              "as": "Code"
+            },
+            {
+              "ref": [
+                "Description"
+              ],
+              "as": "Text"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Code": {
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Text": {
+          "localized": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "MyService": {
+      "@source": "srv/catalog-service.cds",
+      "kind": "service"
+    },
+    "MyService.SuppliersProduct": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              {
+                "id": "com.logali.materials.Products",
+                "where": [
+                  {
+                    "ref": [
+                      "Name"
+                    ]
+                  },
+                  "=",
+                  {
+                    "val": "Bread"
+                  }
+                ]
+              }
+            ]
+          },
+          "columns": [
+            "*",
+            {
+              "ref": [
+                "Name"
+              ]
+            },
+            {
+              "ref": [
+                "Description"
+              ]
+            },
+            {
+              "ref": [
+                "Supplier",
+                "Address"
+              ]
+            }
+          ],
+          "where": [
+            {
+              "ref": [
+                "Supplier",
+                "Address",
+                "PostalCode"
+              ]
+            },
+            "=",
+            {
+              "val": "98074"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "MyService.SuppliersProduct.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "MyService.SuppliersProduct.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        },
+        "Address": {
+          "type": "com.logali.Address"
+        }
+      }
+    },
+    "MyService.SuppliersToSales": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "Supplier",
+                "Email"
+              ]
+            },
+            {
+              "ref": [
+                "Category",
+                "Name"
+              ]
+            },
+            {
+              "ref": [
+                "ToSalesData",
+                "Currency",
+                "ID"
+              ]
+            },
+            {
+              "ref": [
+                "ToSalesData",
+                "Currency",
+                "Description"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Email": {
+          "type": "cds.String"
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ID": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "MyService.EntityInfix": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                {
+                  "id": "Supplier",
+                  "where": [
+                    {
+                      "ref": [
+                        "Name"
+                      ]
+                    },
+                    "=",
+                    {
+                      "val": "Exotic Liquids"
+                    }
+                  ]
+                },
+                "Phone"
+              ]
+            }
+          ],
+          "where": [
+            {
+              "ref": [
+                "Products",
+                "Name"
+              ]
+            },
+            "=",
+            {
+              "val": "Bread"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Phone": {
+          "type": "cds.String"
+        }
+      }
+    },
+    "MyService.EntityJoin": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "join": "left",
+            "args": [
+              {
+                "ref": [
+                  "com.logali.materials.Products"
+                ]
+              },
+              {
+                "ref": [
+                  "com.logali.sales.Suppliers"
+                ],
+                "as": "supp"
+              }
+            ],
+            "on": [
+              {
+                "ref": [
+                  "supp",
+                  "ID"
+                ]
+              },
+              "=",
+              {
+                "ref": [
+                  "Products",
+                  "Supplier",
+                  "ID"
+                ]
+              },
+              "and",
+              {
+                "ref": [
+                  "supp",
+                  "Name"
+                ]
+              },
+              "=",
+              {
+                "val": "Exotic Liquids"
+              }
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "Phone"
+              ]
+            }
+          ],
+          "where": [
+            {
+              "ref": [
+                "Products",
+                "Name"
+              ]
+            },
+            "=",
+            {
+              "val": "Bread"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Phone": {
+          "type": "cds.String"
+        }
+      }
+    },
+    "Reports": {
+      "@source": "srv/catalog-service.cds",
+      "kind": "service"
+    },
+    "Reports.AverageRating": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "com.logali.reports.AverageRating"
+          ]
+        }
+      },
+      "elements": {
+        "ProductID": {
+          "type": "cds.UUID"
+        },
+        "AverageRating": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        }
+      }
+    },
+    "Reports.EntityCasting": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          },
+          "columns": [
+            {
+              "xpr": [
+                {
+                  "ref": [
+                    "Price"
+                  ],
+                  "cast": {
+                    "type": "cds.Integer"
+                  }
+                }
+              ],
+              "as": "Price"
+            },
+            {
+              "ref": [
+                "Price"
+              ],
+              "as": "Price2",
+              "cast": {
+                "type": "cds.Integer"
+              }
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Price": {
+          "@Core.Computed": true,
+          "type": "cds.Integer"
+        },
+        "Price2": {
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "com.logali.Name": {
+      "kind": "type",
+      "type": "cds.String",
+      "length": 50
+    },
+    "com.logali.Address": {
+      "kind": "type",
+      "elements": {
+        "Street": {
+          "type": "cds.String"
+        },
+        "City": {
+          "type": "cds.String"
+        },
+        "State": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PostalCode": {
+          "type": "cds.String",
+          "length": 5
+        },
+        "Country": {
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "com.logali.Dec": {
+      "kind": "type",
+      "type": "cds.Decimal",
+      "precision": 16,
+      "scale": 2
+    },
+    "com.logali.materials": {
+      "kind": "context"
+    },
+    "com.logali.materials.Products": {
+      "kind": "entity",
+      "includes": [
+        "cuid",
+        "managed"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.materials.Categories": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Categories.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.materials.StockAvailability": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "Product": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.StockAvailability.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.StockAvailability.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.materials.Currencies": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.materials.UnitOfMeasures": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.UnitOfMeasures.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.materials.DimensionUnits": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.DimensionUnits.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.materials.ProductReview": {
+      "kind": "entity",
+      "includes": [
+        "cuid",
+        "managed"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "type": "cds.String"
+        },
+        "Rating": {
+          "type": "cds.Integer"
+        },
+        "Comment": {
+          "type": "cds.String"
+        },
+        "Product": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales": {
+      "kind": "context"
+    },
+    "com.logali.sales.Suppliers": {
+      "kind": "entity",
+      "includes": [
+        "cuid",
+        "managed"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Name"
+            ]
+          },
+          "notNull": true
+        },
+        "Address": {
+          "type": "com.logali.Address"
+        },
+        "Email": {
+          "type": "cds.String"
+        },
+        "Phone": {
+          "type": "cds.String"
+        },
+        "Fax": {
+          "type": "cds.String"
+        },
+        "Product": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products",
+          "on": [
+            {
+              "ref": [
+                "Product",
+                "Supplier"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.Months": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ShortDescription": {
+          "localized": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.Months.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.sales.Months.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.SalesData": {
+      "kind": "entity",
+      "includes": [
+        "cuid",
+        "managed"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "DeliveryDate": {
+          "type": "cds.DateTime"
+        },
+        "Revenue": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Product": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DeliveryMonth": {
+          "type": "cds.Association",
+          "target": "com.logali.sales.Months",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.SelProducts": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          }
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.SelProducts1": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          },
+          "columns": [
+            "*"
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.SelProducts2": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "Name"
+              ]
+            },
+            {
+              "ref": [
+                "Price"
+              ]
+            },
+            {
+              "ref": [
+                "Quantity"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        }
+      }
+    },
+    "com.logali.sales.SelProducts3": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "join": "left",
+            "args": [
+              {
+                "ref": [
+                  "com.logali.materials.Products"
+                ]
+              },
+              {
+                "ref": [
+                  "com.logali.materials.ProductReview"
+                ]
+              }
+            ],
+            "on": [
+              {
+                "ref": [
+                  "Products",
+                  "Name"
+                ]
+              },
+              "=",
+              {
+                "ref": [
+                  "ProductReview",
+                  "Name"
+                ]
+              }
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "Rating"
+              ]
+            },
+            {
+              "ref": [
+                "Products",
+                "Name"
+              ]
+            },
+            {
+              "func": "Sum",
+              "args": [
+                {
+                  "ref": [
+                    "Price"
+                  ]
+                }
+              ],
+              "as": "TotalPrice"
+            }
+          ],
+          "groupBy": [
+            {
+              "ref": [
+                "Rating"
+              ]
+            },
+            {
+              "ref": [
+                "Products",
+                "Name"
+              ]
+            }
+          ],
+          "orderBy": [
+            {
+              "ref": [
+                "Rating"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "Rating": {
+          "type": "cds.Integer"
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "TotalPrice": {
+          "@Core.Computed": true
+        }
+      }
+    },
+    "com.logali.sales.ProjProducts": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "com.logali.materials.Products"
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.ProjProducts2": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "com.logali.materials.Products"
+          ]
+        },
+        "columns": [
+          "*"
+        ]
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.ProjProducts3": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "com.logali.materials.Products"
+          ]
+        },
+        "columns": [
+          {
+            "ref": [
+              "ReleaseDate"
+            ]
+          },
+          {
+            "ref": [
+              "Name"
+            ]
+          }
+        ]
+      },
+      "elements": {
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        }
+      }
+    },
+    "com.logali.sales.Orders": {
+      "kind": "entity",
+      "includes": [
+        "cuid"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Date": {
+          "type": "cds.Date"
+        },
+        "Customer": {
+          "type": "cds.String"
+        },
+        "Item": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.OrderItems",
+          "on": [
+            {
+              "ref": [
+                "Item",
+                "Order"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.logali.sales.OrderItems": {
+      "kind": "entity",
+      "includes": [
+        "cuid"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Order": {
+          "type": "cds.Association",
+          "target": "com.logali.sales.Orders",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Product": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Quantity": {
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "com.logali.reports": {
+      "kind": "context"
+    },
+    "com.logali.reports.AverageRating": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.ProductReview"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "Product",
+                "ID"
+              ],
+              "as": "ProductID"
+            },
+            {
+              "func": "avg",
+              "args": [
+                {
+                  "ref": [
+                    "Rating"
+                  ]
+                }
+              ],
+              "as": "AverageRating",
+              "cast": {
+                "type": "cds.Decimal",
+                "precision": 16,
+                "scale": 2
+              }
+            }
+          ],
+          "groupBy": [
+            {
+              "ref": [
+                "Product",
+                "ID"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ProductID": {
+          "type": "cds.UUID"
+        },
+        "AverageRating": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        }
+      }
+    },
+    "com.logali.reports.Products": {
+      "kind": "entity",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "com.logali.materials.Products"
+            ]
+          },
+          "mixin": {
+            "ToStockAvailabity": {
+              "type": "cds.Association",
+              "target": "com.logali.materials.StockAvailability",
+              "on": [
+                {
+                  "ref": [
+                    "ToStockAvailabity",
+                    "ID"
+                  ]
+                },
+                "=",
+                {
+                  "ref": [
+                    "$projection",
+                    "StockAvailability"
+                  ]
+                }
+              ]
+            },
+            "ToAverageRating": {
+              "type": "cds.Association",
+              "target": "com.logali.reports.AverageRating",
+              "on": [
+                {
+                  "ref": [
+                    "ToAverageRating",
+                    "ProductID"
+                  ]
+                },
+                "=",
+                {
+                  "ref": [
+                    "ID"
+                  ]
+                }
+              ]
+            }
+          },
+          "columns": [
+            "*",
+            {
+              "ref": [
+                "ToAverageRating",
+                "AverageRating"
+              ],
+              "as": "Rating"
+            },
+            {
+              "xpr": [
+                "case",
+                "when",
+                {
+                  "ref": [
+                    "Quantity"
+                  ]
+                },
+                ">=",
+                {
+                  "val": 8
+                },
+                "then",
+                {
+                  "val": 3
+                },
+                "when",
+                {
+                  "ref": [
+                    "Quantity"
+                  ]
+                },
+                ">",
+                {
+                  "val": 0
+                },
+                "then",
+                {
+                  "val": 2
+                },
+                "else",
+                {
+                  "val": 1
+                },
+                "end"
+              ],
+              "as": "StockAvailability",
+              "cast": {
+                "type": "cds.Integer"
+              }
+            },
+            {
+              "ref": [
+                "ToStockAvailabity"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "Name": {
+          "localized": true,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ImageUrl": {
+          "type": "cds.String"
+        },
+        "ReleaseDate": {
+          "type": "cds.DateTime",
+          "default": {
+            "ref": [
+              "$now"
+            ]
+          }
+        },
+        "DiscontinuedDate": {
+          "type": "cds.DateTime"
+        },
+        "Price": {
+          "type": "com.logali.Dec",
+          "precision": 16,
+          "scale": 2
+        },
+        "Height": {
+          "type": {
+            "ref": [
+              "com.logali.materials.Products",
+              "Price"
+            ]
+          },
+          "precision": 16,
+          "scale": 2
+        },
+        "Width": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Depth": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Quantity": {
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "Supplier": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "com.logali.sales.Suppliers",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "UnitOfMeasure": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.UnitOfMeasures",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Currency": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "DimensionUnit": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.DimensionUnits",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Category": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Categories",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "ToSalesData": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.sales.SalesData",
+          "on": [
+            {
+              "ref": [
+                "ToSalesData",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "Reviews": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.ProductReview",
+          "on": [
+            {
+              "ref": [
+                "Reviews",
+                "Product"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "PriceCondition": {
+          "type": "cds.String",
+          "length": 2
+        },
+        "PriceDetermination": {
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.Products.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        },
+        "Rating": {
+          "@Core.Computed": true,
+          "type": "cds.Decimal",
+          "precision": 16,
+          "scale": 2
+        },
+        "StockAvailability": {
+          "@Core.Computed": true,
+          "type": "cds.Integer"
+        },
+        "ToStockAvailabity": {
+          "type": "cds.Association",
+          "target": "com.logali.materials.StockAvailability",
+          "on": [
+            {
+              "ref": [
+                "ToStockAvailabity",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self",
+                "StockAvailability"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.training.EmailsAddresses_01": {
+      "kind": "type",
+      "items": {
+        "elements": {
+          "kind": {
+            "type": "cds.String"
+          },
+          "email": {
+            "type": "cds.String"
+          }
+        }
+      }
+    },
+    "com.training.EmailsAddresses_02": {
+      "kind": "type",
+      "elements": {
+        "kind": {
+          "type": "cds.String"
+        },
+        "email": {
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.training.Emails": {
+      "kind": "entity",
+      "elements": {
+        "email_01": {
+          "type": "com.training.EmailsAddresses_01"
+        },
+        "email_02": {
+          "items": {
+            "type": "com.training.EmailsAddresses_02"
+          }
+        },
+        "email_03": {
+          "items": {
+            "elements": {
+              "kind": {
+                "type": "cds.String"
+              },
+              "email": {
+                "type": "cds.String"
+              }
+            }
+          }
+        }
+      }
+    },
+    "com.training.Course": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Student": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.training.StudentCourse",
+          "on": [
+            {
+              "ref": [
+                "Student",
+                "Course"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.training.Student": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Course": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "com.training.StudentCourse",
+          "on": [
+            {
+              "ref": [
+                "Course",
+                "Student"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.training.StudentCourse": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Student": {
+          "type": "cds.Association",
+          "target": "com.training.Student",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "Course": {
+          "type": "cds.Association",
+          "target": "com.training.Course",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "com.training.car": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Name": {
+          "type": "cds.String"
+        },
+        "discount_1": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Decimal"
+        },
+        "discount_2": {
+          "@Core.Computed": false,
+          "virtual": true,
+          "type": "cds.Decimal"
+        }
+      }
+    },
+    "Language": {
+      "kind": "type",
+      "@title": "{i18n>Language}",
+      "@description": "{i18n>LanguageCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Languages",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Currency": {
+      "kind": "type",
+      "@title": "{i18n>Currency}",
+      "@description": "{i18n>CurrencyCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Currencies",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Country": {
+      "kind": "type",
+      "@title": "{i18n>Country}",
+      "@description": "{i18n>CountryCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Countries",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "sap.common": {
+      "kind": "context"
+    },
+    "sap.common.Locale": {
+      "kind": "type",
+      "@title": "{i18n>LanguageCode}",
+      "type": "cds.String",
+      "length": 14
+    },
+    "sap.common.Languages": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Countries": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Currencies": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@title": "{i18n>CurrencySymbol}",
+          "type": "cds.String",
+          "length": 5
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.CodeList": {
+      "kind": "aspect",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        }
+      }
+    },
+    "cuid": {
+      "kind": "aspect",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "managed": {
+      "kind": "aspect",
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        }
+      }
+    },
+    "temporal": {
+      "kind": "aspect",
+      "elements": {
+        "validFrom": {
+          "@cds.valid.from": true,
+          "type": "cds.Timestamp"
+        },
+        "validTo": {
+          "@cds.valid.to": true,
+          "type": "cds.Timestamp"
+        }
+      }
+    },
+    "User": {
+      "kind": "type",
+      "@title": "{i18n>UserID}",
+      "@description": "{i18n>UserID.Description}",
+      "type": "cds.String",
+      "length": 255
+    },
+    "extensible": {
+      "kind": "aspect",
+      "elements": {
+        "extensions__": {
+          "@cds.api.ignore": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.materials.Products.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Name": {
+          "localized": null,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.materials.Categories.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.String",
+          "length": 1
+        },
+        "Name": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.materials.StockAvailability.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.materials.Currencies.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.materials.UnitOfMeasures.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.materials.DimensionUnits.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "com.logali.sales.Months.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.String",
+          "length": 2
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        },
+        "ShortDescription": {
+          "localized": null,
+          "type": "cds.String",
+          "length": 2
+        }
+      }
+    },
+    "sap.common.Languages.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        }
+      }
+    },
+    "sap.common.Countries.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Currencies.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "MyService.SuppliersProduct.texts": {
+      "kind": "entity",
+      "@cds.autoexposed": true,
+      "@odata.draft.enabled": false,
+      "projection": {
+        "from": {
+          "ref": [
+            "com.logali.materials.Products.texts"
+          ]
+        }
+      },
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "Name": {
+          "localized": null,
+          "type": "cds.String",
+          "notNull": true
+        },
+        "Description": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    }
+  },
+  "meta": {
+    "creator": "CDS Compiler v3.5.2",
+    "flavor": "inferred"
+  },
+  "$version": "2.0"
+}

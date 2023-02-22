@@ -86,6 +86,7 @@ context materials {
         Comment : String;
         Product : Association to materials.Products;
     };
+
     extend Products with {
         PriceCondition     : String(2);
         PriceDetermination : String(3)
@@ -110,7 +111,6 @@ context sales {
             Description      : localized String;
             ShortDescription : localized String(2);
     };
-
 
 
     entity SalesData : cuid, managed {
@@ -178,4 +178,41 @@ context sales {
         Product  : Association to materials.Products;
         Quantity : Integer;
     }
+}
+
+context reports {
+    entity AverageRating as
+        select from logali.materials.ProductReview {
+            Product.ID  as ProductID,
+            avg(Rating) as AverageRating : Decimal(16, 2)
+        }
+        group by
+            Product.ID;
+
+    entity Products      as
+        select from logali.materials.Products
+        mixin {
+            ToStockAvailabity : Association to logali.materials.StockAvailability
+                                    on ToStockAvailabity.ID = $projection.StockAvailability;
+            ToAverageRating   : Association to AverageRating
+                                    on ToAverageRating.ProductID = ID;
+
+        }
+        into {
+            *,
+            ToAverageRating.AverageRating as Rating,
+            case
+                when
+                    Quantity >= 8
+                then
+                    3
+                when
+                    Quantity > 0
+                then
+                    2
+                else
+                    1
+            end                           as StockAvailability : Integer,
+            ToStockAvailabity
+        }
 }
